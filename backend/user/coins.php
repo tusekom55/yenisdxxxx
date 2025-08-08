@@ -138,6 +138,7 @@ try {
     $search = $_GET['search'] ?? '';
     
     // Yeni veritabanı yapısına uygun sorgu - arama desteği ile
+    // NOT: Piyasalar listesi için is_active kontrolü yapılır, ancak portföy için yapılmaz
     $sql = 'SELECT 
                 coins.id, 
                 coins.coin_adi, 

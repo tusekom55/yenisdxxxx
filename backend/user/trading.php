@@ -393,7 +393,8 @@ try {
                     // Hiç işlem yoksa boş portföy döndür
                     $portfolio = [];
                 } else {
-                    // DÜZELTME: coins.php ile aynı portföy hesaplama sistemi
+                    // DÜZELTME: Portföyde coin'in aktif durumu kontrol edilmemeli
+                    // Kullanıcı coin'i satın aldığında aktifti, fiyat güncellemesi portföy görünürlüğünü etkilememeli
                     $portfolio_sql = "SELECT 
                                         p.*,
                                         c.coin_adi,
@@ -435,7 +436,6 @@ try {
                                         HAVING SUM(CASE WHEN ci.islem = 'al' THEN ci.miktar ELSE -ci.miktar END) > 0.00000001
                                       ) p
                                       JOIN coins c ON p.coin_id = c.id
-                                      WHERE c.is_active = 1
                                       ORDER BY (p.net_miktar * c.current_price) DESC";
             
                     $portfolio_stmt = $conn->prepare($portfolio_sql);
