@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard - GlobalTradePro</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Charts -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/sidebar.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/trading.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="balance-display" id="userBalance">
+                        <i class="fas fa-coins"></i> ₺0.00
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Çıkış
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <div id="dashboard-container"></div>
+                
+                <!-- Portfolio Section -->
+                <div id="portfolio-container"></div>
+                
+                <!-- Markets Section -->
+                <div id="markets-container"></div>
+                
+                <!-- Trading Section -->
+                <div id="trading-container"></div>
+                
+                <!-- Positions Section -->
+                <div id="positions-container"></div>
+                
+                <!-- Deposit Section -->
+                <div id="deposit-container"></div>
+                
+                <!-- Withdrawal Section -->
+                <div id="withdrawal-container"></div>
+                
+                <!-- Profile Section -->
+                <div id="profile-container"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/trading.js"></script>
+    <script src="assets/js/portfolio.js"></script>
+    <script src="assets/js/profile.js"></script>
+    
+    <script>
+        // Load Components
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComponents();
+        });
+        
+        function loadComponents() {
+            // Load sidebar
+            fetch('assets/components/sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('sidebar-container').innerHTML = html;
+                    
+                    // After sidebar is loaded, setup navigation
+                    if (typeof setupNavigation === 'function') {
+                        setupNavigation();
+                    }
+                })
+                .catch(error => {
+                    console.error('Sidebar yüklenemedi:', error);
+                });
+            
+            // Load dashboard
+            fetch('assets/components/dashboard.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dashboard-container').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Dashboard yüklenemedi:', error);
+                });
+            
+            // Load other components as needed
+            // This will be expanded as we create more component files
+        }
+    </script>
+</body>
+</html>
