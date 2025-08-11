@@ -275,7 +275,7 @@ function updateUserInterface(data) {
     // Update balance display
     const balanceElements = document.querySelectorAll('.balance-display, #totalBalance, #userBalance');
     const balance = (data && data.user && typeof data.user.balance !== 'undefined') ? Number(data.user.balance) : 0;
-    const balanceFormatted = balance.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+    const balanceFormatted = Number.isFinite(balance) ? balance.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) : (0).toLocaleString('tr-TR', { minimumFractionDigits: 2 });
     
     balanceElements.forEach(element => {
         if (element.id === 'totalBalance') {
@@ -297,10 +297,14 @@ function updateUserInterface(data) {
 }
 
 function updateProfileInfo(user) {
+    if (!user || typeof user !== 'object') {
+        return;
+    }
     // Update profile elements
+    const safeBalance = Number.isFinite(Number(user.balance)) ? Number(user.balance) : 0;
     const profileElements = {
         'profileUsername': user.username || 'Kullanıcı',
-        'profileBalanceAmount': `₺${(user.balance || 0).toLocaleString('tr-TR', {minimumFractionDigits: 2})}`,
+        'profileBalanceAmount': formatCurrency(safeBalance),
         'profileJoinDate': formatJoinDate(user.created_at)
     };
     
@@ -423,11 +427,15 @@ function showNotification(message, type = 'info', duration = 5000) {
 
 // Utility Functions
 function formatCurrency(amount, currency = '₺') {
-    return `${currency}${amount.toLocaleString('tr-TR', {minimumFractionDigits: 2})}`;
+    const value = Number(amount);
+    const safe = Number.isFinite(value) ? value : 0;
+    return `${currency}${safe.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`;
 }
 
 function formatNumber(num) {
-    return num.toLocaleString('tr-TR');
+    const value = Number(num);
+    const safe = Number.isFinite(value) ? value : 0;
+    return safe.toLocaleString('tr-TR');
 }
 
 function formatDate(dateString) {

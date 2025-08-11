@@ -240,7 +240,7 @@ function displayTransactionHistory(transactions) {
                 <div class="transaction-time">${formatDate(transaction.created_at)}</div>
             </div>
             <div class="transaction-amount ${transaction.amount >= 0 ? 'positive' : 'negative'}">
-                ${transaction.amount >= 0 ? '+' : ''}₺${parseFloat(transaction.amount).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
+                ${Number(transaction.amount) >= 0 ? '+' : ''}₺${(Number.isFinite(Number(transaction.amount)) ? Number(transaction.amount) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
             </div>
         </div>
     `).join('');

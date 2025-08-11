@@ -82,9 +82,10 @@ function updateTradingInterface() {
     // Update coin info
     const coinInfoElement = document.getElementById('selectedCoinInfo');
     if (coinInfoElement) {
+        const priceSafe = Number.isFinite(Number(selectedCoin.price)) ? Number(selectedCoin.price) : 0;
         coinInfoElement.innerHTML = `
             <h3>${selectedCoin.symbol}</h3>
-            <p class="price">₺${selectedCoin.price.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</p>
+            <p class="price">${formatCurrency(priceSafe)}</p>
         `;
     }
     
@@ -96,12 +97,12 @@ function updateTradingInterface() {
 function calculateTrade() {
     if (!selectedCoin) return;
     
-    const amount = parseFloat(document.getElementById('tradeAmount')?.value) || 0;
+    const amount = Number(document.getElementById('tradeAmount')?.value) || 0;
     const price = selectedCoin.price;
     
     if (amount <= 0) return;
     
-    const totalValue = amount * price;
+    const totalValue = Number(amount) * Number(price);
     const commission = totalValue * 0.001; // %0.1 komisyon
     const netAmount = totalValue - commission;
     
@@ -111,15 +112,15 @@ function calculateTrade() {
         calculationPanel.innerHTML = `
             <div class="calculation-row">
                 <span class="calculation-label">İşlem Tutarı</span>
-                <span class="calculation-value">₺${totalValue.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</span>
+                <span class="calculation-value">₺${(Number.isFinite(totalValue) ? totalValue : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
             </div>
             <div class="calculation-row">
                 <span class="calculation-label">Komisyon</span>
-                <span class="calculation-value">₺${commission.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</span>
+                <span class="calculation-value">₺${(Number.isFinite(commission) ? commission : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
             </div>
             <div class="calculation-row">
                 <span class="calculation-label">Net Tutar</span>
-                <span class="calculation-value">₺${netAmount.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</span>
+                <span class="calculation-value">₺${(Number.isFinite(netAmount) ? netAmount : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
             </div>
         `;
     }
@@ -250,10 +251,10 @@ function displayMarkets(markets) {
                 <div class="pair-symbol">${coin.symbol}</div>
                 <div class="pair-category">${coin.category || 'Crypto'}</div>
             </div>
-            <div class="pair-price">
-                <div class="price ${coin.price_change >= 0 ? 'price-up' : 'price-down'}">
-                    ₺${parseFloat(coin.price).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
-                </div>
+        <div class="pair-price">
+            <div class="price ${coin.price_change >= 0 ? 'price-up' : 'price-down'}">
+                ${formatCurrency(Number.isFinite(Number(coin.price)) ? Number(coin.price) : 0)}
+            </div>
                 <div class="pair-spread">${coin.price_change >= 0 ? '+' : ''}${coin.price_change}%</div>
             </div>
         </div>

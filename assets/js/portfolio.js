@@ -62,8 +62,12 @@ function updatePortfolioSummary(totalValue, totalPnl) {
 
 // Calculate Change Percent
 function calculateChangePercent(totalValue, pnl) {
-    if (totalValue === 0) return 0;
-    return ((pnl / (totalValue - pnl)) * 100).toFixed(2);
+    const tv = Number(totalValue);
+    const p = Number(pnl);
+    if (!Number.isFinite(tv) || !Number.isFinite(p) || tv === 0 || tv === p) return 0;
+    const denom = tv - p;
+    if (!Number.isFinite(denom) || denom === 0) return 0;
+    return ((p / denom) * 100).toFixed(2);
 }
 
 // Display Assets
@@ -93,24 +97,24 @@ function displayAssets(assets) {
                     <span class="asset-category">${asset.category || 'Crypto'}</span>
                 </div>
                 <div class="asset-value">
-                    <div class="current-value">₺${parseFloat(asset.current_value).toLocaleString('tr-TR', {minimumFractionDigits: 2})}</div>
+                    <div class="current-value">₺${(Number.isFinite(Number(asset.current_value)) ? Number(asset.current_value) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</div>
                     <div class="asset-pnl ${asset.pnl >= 0 ? 'positive' : 'negative'}">
-                        ${asset.pnl >= 0 ? '+' : ''}₺${parseFloat(asset.pnl).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
+                        ${Number(asset.pnl) >= 0 ? '+' : ''}₺${(Number.isFinite(Number(asset.pnl)) ? Number(asset.pnl) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                     </div>
                 </div>
             </div>
             <div class="asset-details">
                 <div class="detail-row">
                     <span>Miktar:</span>
-                    <span>${parseFloat(asset.amount).toLocaleString('tr-TR', {minimumFractionDigits: 4)}</span>
+                    <span>${(Number.isFinite(Number(asset.amount)) ? Number(asset.amount) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 4 })}</span>
                 </div>
                 <div class="detail-row">
                     <span>Ortalama Alış:</span>
-                    <span>₺${parseFloat(asset.avg_buy_price).toLocaleString('tr-TR', {minimumFractionDigits: 2})}</span>
+                    <span>₺${(Number.isFinite(Number(asset.avg_buy_price)) ? Number(asset.avg_buy_price) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div class="detail-row">
                     <span>Mevcut Fiyat:</span>
-                    <span>₺${parseFloat(asset.current_price).toLocaleString('tr-TR', {minimumFractionDigits: 2})}</span>
+                    <span>₺${(Number.isFinite(Number(asset.current_price)) ? Number(asset.current_price) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div class="detail-row">
                     <span>Değişim:</span>
@@ -134,7 +138,7 @@ function displayAssets(assets) {
 // Display Transaction History
 function displayTransactionHistory(transactions) {
     const historyContainer = document.getElementById('transactionHistory');
-    if (!historyContainer || !transactions.data) return;
+    if (!historyContainer || !transactions || !transactions.data) return;
     
     if (transactions.data.length === 0) {
         historyContainer.innerHTML = `
@@ -159,7 +163,7 @@ function displayTransactionHistory(transactions) {
                 <div class="transaction-time">${formatDate(transaction.created_at)}</div>
             </div>
             <div class="transaction-amount ${transaction.amount >= 0 ? 'positive' : 'negative'}">
-                ${transaction.amount >= 0 ? '+' : ''}₺${parseFloat(transaction.amount).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
+                ${Number(transaction.amount) >= 0 ? '+' : ''}₺${(Number.isFinite(Number(transaction.amount)) ? Number(transaction.amount) : 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
             </div>
         </div>
     `).join('');
