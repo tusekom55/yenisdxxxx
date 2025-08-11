@@ -166,7 +166,13 @@ function loadUserData() {
         return;
     }
     
-    // Load user data from API using session-based authentication
+    // Try to load user data from API using session-based authentication
+    loadUserDataWithRetry();
+}
+
+function loadUserDataWithRetry(retryCount = 0, maxRetries = 3) {
+    console.log(`🔄 API çağrısı deneniyor... (Deneme: ${retryCount + 1}/${maxRetries + 1})`);
+    
     fetch('backend/public/profile.php', {
         method: 'GET',
         credentials: 'include' // This will send the session cookie
@@ -189,13 +195,36 @@ function loadUserData() {
     })
     .catch(err => {
         console.error('❌ API Hatası:', err);
+        
+        // Log detailed error information
+        console.error('Error details:', {
+            name: err.name,
+            message: err.message,
+            stack: err.stack
+        });
+        
         // If it's an authentication error, redirect to login
         if (err.message && err.message.includes('401')) {
             localStorage.removeItem('authToken');
             localStorage.removeItem('userRole');
-            window.location.href = 'login.html';
+            showNotification('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.', 'error');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
+            // Network error - backend might not be accessible
+            if (retryCount < maxRetries) {
+                console.log(`🔄 Yeniden deneniyor... (${retryCount + 1}/${maxRetries})`);
+                showNotification(`Bağlantı hatası, yeniden deneniyor... (${retryCount + 1}/${maxRetries})`, 'warning');
+                setTimeout(() => {
+                    loadUserDataWithRetry(retryCount + 1, maxRetries);
+                }, 2000 * (retryCount + 1)); // Exponential backoff
+            } else {
+                showNotification('Backend sunucusuna bağlanılamıyor. Lütfen sunucunun çalıştığından emin olun.', 'error');
+                console.error('Backend connection failed after all retries. Please check if the server is running.');
+            }
         } else {
-            showNotification('Bağlantı hatası. Lütfen sayfayı yenileyin.', 'error');
+            showNotification(`Bağlantı hatası: ${err.message}`, 'error');
         }
     });
 }
@@ -385,6 +414,30 @@ function logout() {
     });
 }
 
+// Backend Health Check
+async function checkBackendHealth() {
+    try {
+        const response = await fetch('backend/public/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'username=test&password=test'
+        });
+        
+        if (response.ok) {
+            console.log('✅ Backend is accessible');
+            return true;
+        } else {
+            console.log('⚠️ Backend responded with status:', response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Backend is not accessible:', error.message);
+        return false;
+    }
+}
+
 // Export functions for use in other modules
 window.showSection = showSection;
 window.showNotification = showNotification;
@@ -393,3 +446,17 @@ window.formatNumber = formatNumber;
 window.formatDate = formatDate;
 window.logout = logout;
 window.loadDashboardData = loadDashboardData;
+window.checkBackendHealth = checkBackendHealth;
+
+// Manual retry function
+window.retryConnection = function() {
+    console.log('🔄 Manuel yeniden deneme başlatılıyor...');
+    showNotification('Bağlantı yeniden deneniyor...', 'info');
+    
+    // Clear any existing error state
+    const errorNotifications = document.querySelectorAll('.notification-error');
+    errorNotifications.forEach(notification => notification.remove());
+    
+    // Try to load user data again
+    loadUserData();
+};
