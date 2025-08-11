@@ -126,8 +126,9 @@ function loadSectionData(sectionName) {
             }
             break;
         case 'markets':
-            if (typeof loadMarketsData === 'function') {
-                loadMarketsData();
+            // Use trading module to render markets list
+            if (typeof initializeTrading === 'function') {
+                initializeTrading();
             }
             break;
         case 'trading':
@@ -151,8 +152,9 @@ function loadSectionData(sectionName) {
             }
             break;
         case 'positions':
-            if (typeof loadPositionsData === 'function') {
-                loadPositionsData();
+            // Use trading module to fetch and display positions
+            if (typeof initializeTrading === 'function') {
+                initializeTrading();
             }
             break;
     }
@@ -272,7 +274,7 @@ function loadUserDataWithRetry(retryCount = 0, maxRetries = 3) {
 function updateUserInterface(data) {
     // Update balance display
     const balanceElements = document.querySelectorAll('.balance-display, #totalBalance, #userBalance');
-    const balance = data.balance || 0;
+    const balance = (data && data.user && typeof data.user.balance !== 'undefined') ? Number(data.user.balance) : 0;
     const balanceFormatted = balance.toLocaleString('tr-TR', {minimumFractionDigits: 2});
     
     balanceElements.forEach(element => {

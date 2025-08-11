@@ -4,47 +4,45 @@
         <h1 class="section-title">Portföy</h1>
         <p class="section-subtitle">Yatırım portföyünüzü ve performansınızı görüntüleyin</p>
     </div>
-    
-    <!-- Portfolio Summary -->
-    <div class="portfolio-summary">
-        <div class="summary-card">
-            <div class="summary-header">
-                <h3>Toplam Portföy Değeri</h3>
-                <div class="summary-value" id="portfolioTotalValue">₺0.00</div>
-            </div>
-            <div class="summary-details">
-                <div class="detail-item">
-                    <span>Toplam Yatırım:</span>
-                    <span id="totalInvestment">₺0.00</span>
+
+    <div id="portfolioContainer">
+        <!-- Portfolio Summary -->
+        <div class="portfolio-summary">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Toplam Portföy Değeri</h3>
+                    <div class="summary-value" id="totalPortfolioValue">₺0.00</div>
                 </div>
-                <div class="detail-item">
-                    <span>Toplam K/Z:</span>
-                    <span id="totalPnL" class="positive">₺0.00</span>
-                </div>
-                <div class="detail-item">
-                    <span>K/Z Oranı:</span>
-                    <span id="pnlPercentage" class="positive">0.00%</span>
+                <div class="summary-details">
+                    <div class="detail-item">
+                        <span>Toplam K/Z:</span>
+                        <span id="totalPortfolioPnl" class="positive">₺0.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>K/Z Oranı:</span>
+                        <span id="portfolioChangePercent" class="positive">0.00%</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Portfolio Holdings -->
-    <div class="portfolio-holdings">
-        <div class="holdings-header">
-            <h3>Portföy Pozisyonları</h3>
-            <button class="refresh-btn" onclick="loadPortfolioData()">
-                <i class="fas fa-sync-alt"></i>
-            </button>
-        </div>
-        <div class="holdings-table" id="holdingsTable">
-            <div class="loading-placeholder">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Portföy verileri yükleniyor...</p>
+
+        <!-- Portfolio Holdings -->
+        <div class="portfolio-holdings">
+            <div class="holdings-header">
+                <h3>Portföy Pozisyonları</h3>
+                <button class="refresh-btn" onclick="refreshPortfolio()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div id="assetsList">
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Portföy verileri yükleniyor...</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Portfolio Chart -->
     <div class="portfolio-chart">
         <div class="chart-header">

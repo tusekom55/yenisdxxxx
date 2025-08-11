@@ -30,7 +30,7 @@ async function loadProfileData() {
     try {
         const userData = await getUserData();
         displayProfileInfo(userData.user);
-        displayBalanceInfo(userData.balance);
+        displayBalanceInfo(userData.user ? userData.user.balance : 0);
         
     } catch (error) {
         console.error('Profil verileri yüklenemedi:', error);
