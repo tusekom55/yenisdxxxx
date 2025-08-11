@@ -107,18 +107,49 @@
                     console.error('Sidebar yüklenemedi:', error);
                 });
             
-            // Load dashboard
-            fetch('assets/components/dashboard.html')
+            // Load all components
+            const components = [
+                { id: 'dashboard-container', file: 'dashboard.html' },
+                { id: 'portfolio-container', file: 'portfolio.html' },
+                { id: 'markets-container', file: 'markets.html' },
+                { id: 'trading-container', file: 'trading.html' },
+                { id: 'positions-container', file: 'positions.html' },
+                { id: 'deposit-container', file: 'deposit.html' },
+                { id: 'withdrawal-container', file: 'withdrawal.html' },
+                { id: 'profile-container', file: 'profile.html' }
+            ];
+            
+            components.forEach(component => {
+                fetch(`assets/components/${component.file}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById(component.id).innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error(`${component.file} yüklenemedi:`, error);
+                        // Show error message in the container
+                        document.getElementById(component.id).innerHTML = `
+                            <div class="error-placeholder">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>${component.file} yüklenemedi</p>
+                                <button onclick="retryLoadComponent('${component.id}', '${component.file}')">
+                                    <i class="fas fa-redo"></i> Yeniden Dene
+                                </button>
+                            </div>
+                        `;
+                    });
+            });
+        }
+        
+        function retryLoadComponent(containerId, fileName) {
+            fetch(`assets/components/${fileName}`)
                 .then(response => response.text())
                 .then(html => {
-                    document.getElementById('dashboard-container').innerHTML = html;
+                    document.getElementById(containerId).innerHTML = html;
                 })
                 .catch(error => {
-                    console.error('Dashboard yüklenemedi:', error);
+                    console.error(`${fileName} yeniden yüklenemedi:`, error);
                 });
-            
-            // Load other components as needed
-            // This will be expanded as we create more component files
         }
     </script>
 </body>

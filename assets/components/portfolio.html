@@ -1,0 +1,67 @@
+<!-- Portfolio Section -->
+<section class="content-section" id="portfolio">
+    <div class="section-header">
+        <h1 class="section-title">Portföy</h1>
+        <p class="section-subtitle">Yatırım portföyünüzü ve performansınızı görüntüleyin</p>
+    </div>
+    
+    <!-- Portfolio Summary -->
+    <div class="portfolio-summary">
+        <div class="summary-card">
+            <div class="summary-header">
+                <h3>Toplam Portföy Değeri</h3>
+                <div class="summary-value" id="portfolioTotalValue">₺0.00</div>
+            </div>
+            <div class="summary-details">
+                <div class="detail-item">
+                    <span>Toplam Yatırım:</span>
+                    <span id="totalInvestment">₺0.00</span>
+                </div>
+                <div class="detail-item">
+                    <span>Toplam K/Z:</span>
+                    <span id="totalPnL" class="positive">₺0.00</span>
+                </div>
+                <div class="detail-item">
+                    <span>K/Z Oranı:</span>
+                    <span id="pnlPercentage" class="positive">0.00%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Portfolio Holdings -->
+    <div class="portfolio-holdings">
+        <div class="holdings-header">
+            <h3>Portföy Pozisyonları</h3>
+            <button class="refresh-btn" onclick="loadPortfolioData()">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="holdings-table" id="holdingsTable">
+            <div class="loading-placeholder">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Portföy verileri yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Portfolio Chart -->
+    <div class="portfolio-chart">
+        <div class="chart-header">
+            <h3>Portföy Performans Grafiği</h3>
+            <div class="chart-controls">
+                <button class="chart-btn active" data-period="1d">1G</button>
+                <button class="chart-btn" data-period="1w">1H</button>
+                <button class="chart-btn" data-period="1m">1A</button>
+                <button class="chart-btn" data-period="3m">3A</button>
+                <button class="chart-btn" data-period="1y">1Y</button>
+            </div>
+        </div>
+        <div id="portfolioPerformanceChart" style="height: 400px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center; color: #8896ab;">
+                <i class="fas fa-chart-area" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                <p>Grafik yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+</section>

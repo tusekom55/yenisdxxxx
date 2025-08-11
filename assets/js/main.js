@@ -48,6 +48,8 @@ function setupNavigation() {
 }
 
 function showSection(sectionName) {
+    console.log(`🔄 Section değiştiriliyor: ${sectionName}`);
+    
     // Hide all sections
     const sections = document.querySelectorAll('.content-section');
     sections.forEach(section => {
@@ -70,6 +72,44 @@ function showSection(sectionName) {
         
         // Load section specific data
         loadSectionData(sectionName);
+        
+        console.log(`✅ Section aktif edildi: ${sectionName}`);
+    } else {
+        console.warn(`⚠️ Section bulunamadı: ${sectionName}`);
+        // Try to load the component if it doesn't exist
+        loadComponentIfMissing(sectionName);
+    }
+}
+
+function loadComponentIfMissing(sectionName) {
+    const componentMap = {
+        'dashboard': 'dashboard.html',
+        'portfolio': 'portfolio.html',
+        'markets': 'markets.html',
+        'trading': 'trading.html',
+        'positions': 'positions.html',
+        'deposit': 'deposit.html',
+        'withdrawal': 'withdrawal.html',
+        'profile': 'profile.html'
+    };
+    
+    const fileName = componentMap[sectionName];
+    if (fileName) {
+        console.log(`🔄 Eksik component yükleniyor: ${fileName}`);
+        fetch(`assets/components/${fileName}`)
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById(`${sectionName}-container`);
+                if (container) {
+                    container.innerHTML = html;
+                    // Now try to show the section again
+                    setTimeout(() => showSection(sectionName), 100);
+                }
+            })
+            .catch(error => {
+                console.error(`❌ Component yüklenemedi: ${fileName}`, error);
+                showNotification(`Section yüklenemedi: ${sectionName}`, 'error');
+            });
     }
 }
 

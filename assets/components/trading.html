@@ -1,0 +1,145 @@
+<!-- Trading Section -->
+<section class="content-section" id="trading">
+    <div class="section-header">
+        <h1 class="section-title">İşlem</h1>
+        <p class="section-subtitle">Yeni pozisyon açın ve mevcut pozisyonlarınızı yönetin</p>
+    </div>
+    
+    <!-- Trading Interface -->
+    <div class="trading-interface">
+        <!-- Left Panel - Trading Form -->
+        <div class="trading-panel">
+            <div class="panel-header">
+                <h3>Yeni İşlem</h3>
+            </div>
+            
+            <div class="trading-form">
+                <!-- Symbol Selection -->
+                <div class="form-group">
+                    <label for="tradingSymbol">Sembol</label>
+                    <div class="symbol-selector">
+                        <input type="text" id="tradingSymbol" placeholder="Sembol seçin..." list="symbolsList">
+                        <datalist id="symbolsList">
+                            <option value="EUR/USD">EUR/USD</option>
+                            <option value="GBP/USD">GBP/USD</option>
+                            <option value="USD/JPY">USD/JPY</option>
+                            <option value="BTC/USD">BTC/USD</option>
+                            <option value="ETH/USD">ETH/USD</option>
+                        </datalist>
+                        <button class="symbol-btn" onclick="selectSymbol('EUR/USD')">EUR/USD</button>
+                        <button class="symbol-btn" onclick="selectSymbol('GBP/USD')">GBP/USD</button>
+                        <button class="symbol-btn" onclick="selectSymbol('BTC/USD')">BTC/USD</button>
+                    </div>
+                </div>
+                
+                <!-- Trade Direction -->
+                <div class="form-group">
+                    <label>İşlem Yönü</label>
+                    <div class="direction-buttons">
+                        <button class="direction-btn buy active" onclick="setDirection('buy')">
+                            <i class="fas fa-arrow-up"></i> Al (Long)
+                        </button>
+                        <button class="direction-btn sell" onclick="setDirection('sell')">
+                            <i class="fas fa-arrow-down"></i> Sat (Short)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Amount and Leverage -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tradingAmount">Miktar (₺)</label>
+                        <input type="number" id="tradingAmount" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="tradingLeverage">Kaldıraç</label>
+                        <select id="tradingLeverage">
+                            <option value="1">1x</option>
+                            <option value="5">5x</option>
+                            <option value="10">10x</option>
+                            <option value="20">20x</option>
+                            <option value="50">50x</option>
+                            <option value="100">100x</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Stop Loss and Take Profit -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stopLoss">Stop Loss</label>
+                        <input type="number" id="stopLoss" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="takeProfit">Take Profit</label>
+                        <input type="number" id="takeProfit" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                
+                <!-- Trade Summary -->
+                <div class="trade-summary">
+                    <div class="summary-item">
+                        <span>Pozisyon Büyüklüğü:</span>
+                        <span id="positionSize">₺0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Margin Gereksinimi:</span>
+                        <span id="marginRequired">₺0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Potansiyel K/Z:</span>
+                        <span id="potentialPnL">₺0.00</span>
+                    </div>
+                </div>
+                
+                <!-- Execute Button -->
+                <button class="execute-btn" onclick="executeTrade()">
+                    <i class="fas fa-play"></i> İşlemi Gerçekleştir
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Chart and Info -->
+        <div class="trading-chart-panel">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h4 id="chartSymbol">EUR/USD</h4>
+                    <div class="chart-controls">
+                        <button class="timeframe-btn active" data-timeframe="1m">1M</button>
+                        <button class="timeframe-btn" data-timeframe="5m">5M</button>
+                        <button class="timeframe-btn" data-timeframe="15m">15M</button>
+                        <button class="timeframe-btn" data-timeframe="1h">1H</button>
+                        <button class="timeframe-btn" data-timeframe="4h">4H</button>
+                        <button class="timeframe-btn" data-timeframe="1d">1D</button>
+                    </div>
+                </div>
+                <div id="tradingChart" style="height: 400px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: #8896ab;">
+                        <i class="fas fa-chart-line" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>Grafik yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market Info -->
+            <div class="market-info">
+                <div class="info-item">
+                    <span class="info-label">Son Fiyat:</span>
+                    <span class="info-value" id="lastPrice">0.0000</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">24s Değişim:</span>
+                    <span class="info-value" id="priceChange">0.00%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">24s Yüksek:</span>
+                    <span class="info-value" id="dayHigh">0.0000</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">24s Düşük:</span>
+                    <span class="info-value" id="dayLow">0.0000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

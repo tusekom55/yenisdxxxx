@@ -1,0 +1,68 @@
+<!-- Markets Section -->
+<section class="content-section" id="markets">
+    <div class="section-header">
+        <h1 class="section-title">Piyasalar</h1>
+        <p class="section-subtitle">Canlı piyasa verilerini ve fiyat hareketlerini takip edin</p>
+    </div>
+    
+    <!-- Market Filters -->
+    <div class="market-filters">
+        <div class="filter-group">
+            <label>Kategori:</label>
+            <select id="marketCategory" onchange="filterMarkets()">
+                <option value="all">Tümü</option>
+                <option value="forex">Forex</option>
+                <option value="crypto">Kripto</option>
+                <option value="stocks">Hisse Senetleri</option>
+                <option value="commodities">Emtia</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Sıralama:</label>
+            <select id="marketSort" onchange="sortMarkets()">
+                <option value="name">İsim</option>
+                <option value="price">Fiyat</option>
+                <option value="change">Değişim</option>
+                <option value="volume">Hacim</option>
+            </select>
+        </div>
+        <div class="search-box">
+            <input type="text" id="marketSearch" placeholder="Sembol ara..." onkeyup="searchMarkets()">
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+    
+    <!-- Markets Table -->
+    <div class="markets-table">
+        <div class="table-header">
+            <div class="header-cell">Sembol</div>
+            <div class="header-cell">Son Fiyat</div>
+            <div class="header-cell">24s Değişim</div>
+            <div class="header-cell">24s Hacim</div>
+            <div class="header-cell">İşlem</div>
+        </div>
+        <div class="table-body" id="marketsTableBody">
+            <div class="loading-placeholder">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Piyasa verileri yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Market Watchlist -->
+    <div class="market-watchlist">
+        <div class="watchlist-header">
+            <h3>Takip Listesi</h3>
+            <button class="add-watchlist-btn" onclick="addToWatchlist()">
+                <i class="fas fa-plus"></i> Ekle
+            </button>
+        </div>
+        <div class="watchlist-items" id="watchlistItems">
+            <div class="empty-watchlist">
+                <i class="fas fa-star" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px;"></i>
+                <p>Henüz takip listesi eklenmemiş</p>
+                <small>Favori sembollerinizi ekleyerek hızlı erişim sağlayın</small>
+            </div>
+        </div>
+    </div>
+</section>

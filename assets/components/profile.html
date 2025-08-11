@@ -1,0 +1,207 @@
+<!-- Profile Section -->
+<section class="content-section" id="profile">
+    <div class="section-header">
+        <h1 class="section-title">Profil</h1>
+        <p class="section-subtitle">Hesap bilgilerinizi görüntüleyin ve güncelleyin</p>
+    </div>
+    
+    <!-- Profile Overview -->
+    <div class="profile-overview">
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <div class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <button class="change-avatar-btn">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            <div class="profile-info">
+                <h3 id="profileDisplayName">Kullanıcı Adı</h3>
+                <p id="profileEmail">email@example.com</p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Üyelik:</span>
+                        <span class="stat-value" id="profileJoinDate">Ocak 2024</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Son Giriş:</span>
+                        <span class="stat-value" id="profileLastLogin">Bugün</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="personal">Kişisel Bilgiler</button>
+            <button class="tab-btn" data-tab="security">Güvenlik</button>
+            <button class="tab-btn" data-tab="preferences">Tercihler</button>
+            <button class="tab-btn" data-tab="activity">Aktivite</button>
+        </div>
+        
+        <!-- Personal Information Tab -->
+        <div class="tab-content active" id="personal-tab">
+            <div class="profile-form">
+                <form id="personalInfoForm" onsubmit="updatePersonalInfo(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">Ad</label>
+                            <input type="text" id="firstName" name="firstName" placeholder="Adınız" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Soyad</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Soyadınız" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">Kullanıcı Adı</label>
+                            <input type="text" id="username" name="username" placeholder="Kullanıcı adınız" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-posta</label>
+                            <input type="email" id="email" name="email" placeholder="E-posta adresiniz" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+90 5XX XXX XX XX">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthDate">Doğum Tarihi</label>
+                            <input type="date" id="birthDate" name="birthDate">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Adres</label>
+                        <textarea id="address" name="address" placeholder="Adres bilgileriniz" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i> Kaydet
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="resetPersonalForm()">
+                            <i class="fas fa-times"></i> İptal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Security Tab -->
+        <div class="tab-content" id="security-tab">
+            <div class="security-settings">
+                <div class="security-item">
+                    <div class="security-info">
+                        <h4>Şifre Değiştir</h4>
+                        <p>Hesap güvenliğiniz için düzenli olarak şifrenizi değiştirin</p>
+                    </div>
+                    <button class="security-btn" onclick="showChangePasswordModal()">
+                        <i class="fas fa-key"></i> Değiştir
+                    </button>
+                </div>
+                
+                <div class="security-item">
+                    <div class="security-info">
+                        <h4>İki Faktörlü Doğrulama</h4>
+                        <p>Hesabınızı ekstra güvenlik katmanı ile koruyun</p>
+                    </div>
+                    <button class="security-btn" onclick="setupTwoFactor()">
+                        <i class="fas fa-shield-alt"></i> Kur
+                    </button>
+                </div>
+                
+                <div class="security-item">
+                    <div class="security-info">
+                        <h4>Oturum Yönetimi</h4>
+                        <p>Aktif oturumlarınızı görüntüleyin ve yönetin</p>
+                    </div>
+                    <button class="security-btn" onclick="manageSessions()">
+                        <i class="fas fa-desktop"></i> Yönet
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Preferences Tab -->
+        <div class="tab-content" id="preferences-tab">
+            <div class="preferences-settings">
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>Bildirim Tercihleri</h4>
+                        <p>Hangi bildirimleri almak istediğinizi seçin</p>
+                    </div>
+                    <div class="preference-controls">
+                        <label class="switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>E-posta Bildirimleri</span>
+                    </div>
+                </div>
+                
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>Dil ve Bölge</h4>
+                        <p>Uygulama dilini ve para birimini seçin</p>
+                    </div>
+                    <div class="preference-controls">
+                        <select id="languagePreference">
+                            <option value="tr">Türkçe</option>
+                            <option value="en">English</option>
+                        </select>
+                        <select id="currencyPreference">
+                            <option value="TRY">Türk Lirası (₺)</option>
+                            <option value="USD">Amerikan Doları ($)</option>
+                            <option value="EUR">Euro (€)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>Tema</h4>
+                        <p>Uygulama temasını seçin</p>
+                    </div>
+                    <div class="preference-controls">
+                        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">
+                            <i class="fas fa-moon"></i> Koyu
+                        </button>
+                        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">
+                            <i class="fas fa-sun"></i> Açık
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Tab -->
+        <div class="tab-content" id="activity-tab">
+            <div class="activity-filters">
+                <select id="activityType" onchange="filterActivity()">
+                    <option value="all">Tüm Aktiviteler</option>
+                    <option value="login">Giriş</option>
+                    <option value="trade">İşlem</option>
+                    <option value="deposit">Para Yatırma</option>
+                    <option value="withdrawal">Para Çekme</option>
+                </select>
+                <input type="date" id="activityDate" onchange="filterActivity()">
+            </div>
+            
+            <div class="activity-list" id="activityList">
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Aktivite verileri yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
