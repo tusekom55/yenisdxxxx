@@ -8,7 +8,8 @@ async function apiCall(endpoint, data = null, method = 'POST') {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            credentials: 'include' // Include session cookies
         };
 
         if (data) {
@@ -31,15 +32,23 @@ async function apiCall(endpoint, data = null, method = 'POST') {
 
 // User API Functions
 async function getUserData() {
+    // Check if user has valid session
     const token = localStorage.getItem('authToken');
     if (!token) {
         throw new Error('Kullanıcı girişi gerekli');
     }
 
-    return await apiCall('auth.php', {
-        action: 'get_user_data',
-        token: token
+    // Use profile.php endpoint for session-based authentication
+    const response = await fetch(API_BASE_URL + 'public/profile.php', {
+        method: 'GET',
+        credentials: 'include'
     });
+    
+    if (!response.ok) {
+        throw new Error('Oturum süreniz dolmuş');
+    }
+    
+    return await response.json();
 }
 
 async function updateUserProfile(userData) {
@@ -50,7 +59,6 @@ async function updateUserProfile(userData) {
 
     return await apiCall('auth.php', {
         action: 'update_profile',
-        token: token,
         ...userData
     });
 }
@@ -77,7 +85,6 @@ async function openPosition(tradeData) {
 
     return await apiCall('user/trading.php', {
         action: 'open_position',
-        token: token,
         ...tradeData
     });
 }
@@ -90,7 +97,6 @@ async function closePosition(positionId) {
 
     return await apiCall('user/trading.php', {
         action: 'close_position',
-        token: token,
         position_id: positionId
     });
 }
@@ -102,8 +108,7 @@ async function getPositions() {
     }
 
     return await apiCall('user/trading.php', {
-        action: 'get_positions',
-        token: token
+        action: 'get_positions'
     });
 }
 
@@ -115,8 +120,7 @@ async function getPortfolio() {
     }
 
     return await apiCall('user/portfolio.php', {
-        action: 'get_portfolio',
-        token: token
+        action: 'get_portfolio'
     });
 }
 
@@ -128,7 +132,6 @@ async function getTransactionHistory(page = 1, limit = 20) {
 
     return await apiCall('user/transaction_history.php', {
         action: 'get_history',
-        token: token,
         page: page,
         limit: limit
     });
@@ -143,7 +146,6 @@ async function createDeposit(depositData) {
 
     return await apiCall('user/deposits.php', {
         action: 'create_deposit',
-        token: token,
         ...depositData
     });
 }
@@ -155,8 +157,7 @@ async function getDeposits() {
     }
 
     return await apiCall('user/deposits.php', {
-        action: 'get_deposits',
-        token: token
+        action: 'get_deposits'
     });
 }
 
@@ -168,7 +169,6 @@ async function createWithdrawal(withdrawalData) {
 
     return await apiCall('user/withdrawals.php', {
         action: 'create_withdrawal',
-        token: token,
         ...withdrawalData
     });
 }
@@ -180,8 +180,7 @@ async function getWithdrawals() {
     }
 
     return await apiCall('user/withdrawals.php', {
-        action: 'get_withdrawals',
-        token: token
+        action: 'get_withdrawals'
     });
 }
 
@@ -189,7 +188,10 @@ async function getWithdrawals() {
 function handleApiError(error) {
     console.error('API Hatası:', error);
     
-    if (error.message === 'Kullanıcı girişi gerekli') {
+    if (error.message === 'Kullanıcı girişi gerekli' || error.message === 'Oturum süreniz dolmuş') {
+        // Clear invalid authentication data
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
         showNotification('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.', 'error');
         setTimeout(() => {
             window.location.href = 'login.html';

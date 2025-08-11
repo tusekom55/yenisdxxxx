@@ -166,16 +166,10 @@ function loadUserData() {
         return;
     }
     
-    // Load user data from API
-    fetch('backend/auth.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            action: 'get_user_data',
-            token: token
-        })
+    // Load user data from API using session-based authentication
+    fetch('backend/public/profile.php', {
+        method: 'GET',
+        credentials: 'include' // This will send the session cookie
     })
     .then(response => response.json())
     .then(data => {
@@ -184,6 +178,9 @@ function loadUserData() {
             updateUserInterface(data);
         } else {
             console.error('❌ Kullanıcı verileri yüklenemedi:', data.message);
+            // Clear invalid token and redirect to login
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userRole');
             showNotification('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.', 'error');
             setTimeout(() => {
                 window.location.href = 'login.html';
@@ -192,7 +189,14 @@ function loadUserData() {
     })
     .catch(err => {
         console.error('❌ API Hatası:', err);
-        showNotification('Bağlantı hatası. Lütfen sayfayı yenileyin.', 'error');
+        // If it's an authentication error, redirect to login
+        if (err.message && err.message.includes('401')) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        } else {
+            showNotification('Bağlantı hatası. Lütfen sayfayı yenileyin.', 'error');
+        }
     });
 }
 
@@ -368,9 +372,17 @@ function formatDate(dateString) {
 
 // Logout Function
 function logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    window.location.href = 'login.html';
+    // Call backend logout endpoint to destroy session
+    fetch('backend/public/logout.php', {
+        method: 'POST',
+        credentials: 'include'
+    }).finally(() => {
+        // Clear frontend data and redirect
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userData');
+        window.location.href = 'login.html';
+    });
 }
 
 // Export functions for use in other modules
