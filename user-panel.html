@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trading Dashboard</title>
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    
+    <!-- Module CSS -->
+    <link rel="stylesheet" href="assets/css/sidebar.css">
+    <link rel="stylesheet" href="assets/css/trading.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Crypto Trading Dashboard</h2>
+            <p>Yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>CryptoTrade</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-menu">
+                <a href="#" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-section="markets">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Piyasalar</span>
+                </a>
+                <a href="#" class="nav-link" data-section="portfolio">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Portföy</span>
+                </a>
+                <a href="#" class="nav-link" data-section="trading">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Trading</span>
+                </a>
+                <a href="#" class="nav-link" data-section="positions">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Pozisyonlar</span>
+                    <span class="position-count" id="positionCount" style="display: none;">0</span>
+                </a>
+                <a href="#" class="nav-link" data-section="deposit">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Para Yatır</span>
+                </a>
+                <a href="#" class="nav-link" data-section="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-balance" id="userBalance">
+                    <i class="fas fa-wallet"></i> ₺0.00
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Çıkış</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="header-balance" id="totalBalance">
+                        <h1 style="font-size: 2rem; color: #00d4aa;">₺0.00</h1>
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-menu-btn">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <div id="dashboardContent">
+                        <!-- Dashboard content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Markets Section -->
+                <section id="markets" class="content-section">
+                    <div id="marketsContent">
+                        <!-- Markets content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Portfolio Section -->
+                <section id="portfolio" class="content-section">
+                    <div id="portfolioContent">
+                        <!-- Portfolio content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Trading Section -->
+                <section id="trading" class="content-section">
+                    <div id="tradingContent">
+                        <!-- Trading content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Positions Section -->
+                <section id="positions" class="content-section">
+                    <div id="positionsContent">
+                        <!-- Positions content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Deposit Section -->
+                <section id="deposit" class="content-section">
+                    <div id="depositContent">
+                        <!-- Deposit content will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="profile" class="content-section">
+                    <div id="profileContent">
+                        <!-- Profile content will be loaded here -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Core JavaScript -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    
+    <!-- Module JavaScript -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Crypto Trading Dashboard başlatılıyor...');
+            
+            // Session kontrolü ve uygulama başlatma
+            initializeApp();
+        });
+
+        // Ana uygulama başlatma fonksiyonu
+        async function initializeApp() {
+            try {
+                // Session kontrolü
+                const isAuthenticated = await checkAuthSession();
+                
+                if (!isAuthenticated) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Loading screen'i gizle
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'flex';
+
+                // Dashboard'ı yükle
+                await loadDashboard();
+                
+                // Kullanıcı bilgilerini yükle
+                await loadUserInfo();
+
+                console.log('✅ Uygulama başarıyla başlatıldı');
+
+            } catch (error) {
+                console.error('❌ Uygulama başlatma hatası:', error);
+                showNotification('Uygulama başlatılırken hata oluştu', 'error');
+            }
+        }
+
+        // Session kontrolü
+        async function checkAuthSession() {
+            try {
+                const response = await fetch('backend/public/profile.php', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success && data.user) {
+                    console.log('🔐 Session aktif:', data.user.username);
+                    return true;
+                } else {
+                    console.warn('⚠️ Session bulunamadı');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Session kontrol hatası:', error);
+                return false;
+            }
+        }
+
+        // Çıkış fonksiyonu
+        async function logout() {
+            try {
+                const response = await fetch('backend/public/logout.php', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                showNotification('Başarıyla çıkış yapıldı', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

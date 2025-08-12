@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Flow Test - GlobalTradePro</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #007bff; color: white; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Authentication Flow Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Current Authentication State</h3>
+        <div id="authState" class="result"></div>
+        <button onclick="checkAuthState()">Check Current State</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test Profile API Call</h3>
+        <div id="profileResult" class="result"></div>
+        <button onclick="testProfileAPI()">Test Profile API</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test Logout</h3>
+        <div id="logoutResult" class="result"></div>
+        <button onclick="testLogout()">Test Logout</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Navigation</h3>
+        <button onclick="goToLogin()">Go to Login</button>
+        <button onclick="goToUserPanel()">Go to User Panel</button>
+    </div>
+
+    <script>
+        function checkAuthState() {
+            const authToken = localStorage.getItem('authToken');
+            const userRole = localStorage.getItem('userRole');
+            const userData = localStorage.getItem('userData');
+            
+            const state = {
+                authToken: authToken || 'Not set',
+                userRole: userRole || 'Not set',
+                userData: userData || 'Not set',
+                hasToken: !!authToken
+            };
+            
+            document.getElementById('authState').innerHTML = `
+                <strong>Auth Token:</strong> ${state.authToken}<br>
+                <strong>User Role:</strong> ${state.userRole}<br>
+                <strong>User Data:</strong> ${state.userData}<br>
+                <strong>Is Authenticated:</strong> <span class="${state.hasToken ? 'success' : 'error'}">${state.hasToken ? 'Yes' : 'No'}</span>
+            `;
+        }
+        
+        async function testProfileAPI() {
+            const resultDiv = document.getElementById('profileResult');
+            resultDiv.innerHTML = '<span class="info">Testing profile API...</span>';
+            
+            try {
+                const response = await fetch('backend/public/profile.php', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ Profile API Success!</span><br>
+                        <strong>Username:</strong> ${data.user.username}<br>
+                        <strong>Balance:</strong> ₺${data.user.balance}<br>
+                        <strong>Role:</strong> ${data.user.role}
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `
+                        <span class="error">❌ Profile API Failed</span><br>
+                        <strong>Status:</strong> ${response.status}<br>
+                        <strong>Message:</strong> ${errorData.message || 'Unknown error'}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <span class="error">❌ Network Error</span><br>
+                    <strong>Error:</strong> ${error.message}
+                `;
+            }
+        }
+        
+        async function testLogout() {
+            const resultDiv = document.getElementById('logoutResult');
+            resultDiv.innerHTML = '<span class="info">Testing logout...</span>';
+            
+            try {
+                const response = await fetch('backend/public/logout.php', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ Logout Success!</span><br>
+                        <strong>Message:</strong> ${data.message}
+                    `;
+                    // Clear local storage
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userData');
+                    // Update auth state
+                    checkAuthState();
+                } else {
+                    resultDiv.innerHTML = `
+                        <span class="error">❌ Logout Failed</span><br>
+                        <strong>Status:</strong> ${response.status}
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <span class="error">❌ Network Error</span><br>
+                    <strong>Error:</strong> ${error.message}
+                `;
+            }
+        }
+        
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        function goToUserPanel() {
+            window.location.href = 'user-panel-new.html';
+        }
+        
+        // Check initial state
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+        });
+    </script>
+</body>
+</html>

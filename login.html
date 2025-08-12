@@ -235,10 +235,16 @@
                         .then(r => r.json())
                         .then(userData => {
                             if(userData.success && userData.user.role === 'admin') {
+                                // Set authToken for admin
+                                localStorage.setItem('authToken', 'admin_' + Date.now());
+                                localStorage.setItem('userRole', 'admin');
                                 setTimeout(function(){ 
                                     window.location.href = 'admin-panel.html'; 
                                 }, 1200);
                             } else {
+                                // Set authToken for regular user
+                                localStorage.setItem('authToken', 'user_' + Date.now());
+                                localStorage.setItem('userRole', 'user');
                                 setTimeout(function(){ 
                                     window.location.href = 'user-panel.html'; 
                                 }, 1200);
@@ -262,4 +268,4 @@
     });
     </script>
 </body>
-</html> 
+</html>

@@ -1,0 +1,126 @@
+<!-- Dashboard Section -->
+<section class="content-section active" id="dashboard">
+    <div class="section-header">
+        <h1 class="section-title">Dashboard</h1>
+        <p class="section-subtitle">Trading performansınızı ve portföy durumunuzu takip edin</p>
+    </div>
+    
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon balance">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-indicator positive">+2.5%</span>
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalBalance">₺0</h3>
+                <p>Toplam Bakiye</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon profit">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-indicator positive">+12.5%</span>
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="dailyPnl">₺0</h3>
+                <p>Günlük K/Z</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon portfolio">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-indicator positive">+8.2%</span>
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="openPositions">0</h3>
+                <p>Açık Pozisyonlar</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon trades">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-indicator positive">+15.3%</span>
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalTrades">0</h3>
+                <p>Toplam İşlem</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Charts -->
+    <div class="dashboard-charts">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Portföy Performansı</h3>
+                <div class="chart-controls">
+                    <button class="chart-btn active">1G</button>
+                    <button class="chart-btn">1H</button>
+                    <button class="chart-btn">1A</button>
+                </div>
+            </div>
+            <div id="portfolioChart" style="height: 300px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center; color: #8896ab;">
+                    <i class="fas fa-chart-line" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                    <p>Grafik yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recent-activity">
+            <div class="activity-header">
+                <h3 class="activity-title">Son Aktiviteler</h3>
+                <button class="refresh-btn" onclick="loadTransactionHistory()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div id="transactionHistory">
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Aktivite verileri yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Hızlı İşlemler</h3>
+        </div>
+        <div class="grid grid-3">
+            <button class="btn btn-primary" onclick="showSection('trading')">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Yeni İşlem</span>
+            </button>
+            <button class="btn btn-success" onclick="showSection('deposit')">
+                <i class="fas fa-plus-circle"></i>
+                <span>Para Yatır</span>
+            </button>
+            <button class="btn btn-info" onclick="showSection('markets')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Piyasaları İncele</span>
+            </button>
+        </div>
+    </div>
+</section>

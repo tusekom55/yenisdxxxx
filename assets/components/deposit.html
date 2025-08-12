@@ -1,0 +1,150 @@
+<!-- Deposit Section -->
+<section class="content-section" id="deposit">
+    <div class="section-header">
+        <h1 class="section-title">Para Yatır</h1>
+        <p class="section-subtitle">Hesabınıza güvenli bir şekilde para yatırın</p>
+    </div>
+    
+    <!-- Deposit Methods -->
+    <div class="deposit-methods">
+        <div class="method-card active" data-method="bank">
+            <div class="method-icon">
+                <i class="fas fa-university"></i>
+            </div>
+            <div class="method-info">
+                <h3>Banka Transferi</h3>
+                <p>En güvenli ve hızlı yöntem</p>
+            </div>
+            <div class="method-check">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        
+        <div class="method-card" data-method="credit-card">
+            <div class="method-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="method-info">
+                <h3>Kredi Kartı</h3>
+                <p>Anında işlem</p>
+            </div>
+            <div class="method-check">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        
+        <div class="method-card" data-method="crypto">
+            <div class="method-icon">
+                <i class="fab fa-bitcoin"></i>
+            </div>
+            <div class="method-info">
+                <h3>Kripto Para</h3>
+                <p>Düşük komisyon</p>
+            </div>
+            <div class="method-check">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Deposit Form -->
+    <div class="deposit-form">
+        <div class="form-header">
+            <h3>Para Yatırma Formu</h3>
+        </div>
+        
+        <form id="depositForm" onsubmit="submitDeposit(event)">
+            <div class="form-group">
+                <label for="depositAmount">Yatırılacak Miktar (₺)</label>
+                <input type="number" id="depositAmount" name="amount" placeholder="0.00" min="10" step="0.01" required>
+                <div class="amount-suggestions">
+                    <button type="button" class="amount-btn" onclick="setAmount(100)">₺100</button>
+                    <button type="button" class="amount-btn" onclick="setAmount(500)">₺500</button>
+                    <button type="button" class="amount-btn" onclick="setAmount(1000)">₺1,000</button>
+                    <button type="button" class="amount-btn" onclick="setAmount(5000)">₺5,000</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="depositCurrency">Para Birimi</label>
+                <select id="depositCurrency" name="currency" required>
+                    <option value="TRY">Türk Lirası (₺)</option>
+                    <option value="USD">Amerikan Doları ($)</option>
+                    <option value="EUR">Euro (€)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="depositMethod">Ödeme Yöntemi</label>
+                <select id="depositMethod" name="method" required>
+                    <option value="bank">Banka Transferi</option>
+                    <option value="credit-card">Kredi Kartı</option>
+                    <option value="crypto">Kripto Para</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="depositNote">Not (Opsiyonel)</label>
+                <textarea id="depositNote" name="note" placeholder="Para yatırma işlemi hakkında not ekleyin..." rows="3"></textarea>
+            </div>
+            
+            <!-- Bank Transfer Details (shown when bank method is selected) -->
+            <div class="bank-details" id="bankDetails" style="display: none;">
+                <div class="details-header">
+                    <h4>Banka Hesap Bilgileri</h4>
+                </div>
+                <div class="bank-info">
+                    <div class="info-item">
+                        <span class="label">Banka Adı:</span>
+                        <span class="value">GlobalTradePro Bank</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">IBAN:</span>
+                        <span class="value">TR12 3456 7890 1234 5678 9012 34</span>
+                        <button type="button" class="copy-btn" onclick="copyToClipboard('TR12 3456 7890 1234 5678 9012 34')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Hesap Sahibi:</span>
+                        <span class="value">GlobalTradePro Ltd. Şti.</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Referans Kodu:</span>
+                        <span class="value" id="referenceCode">GT-123456</span>
+                        <button type="button" class="copy-btn" onclick="copyToClipboard(document.getElementById('referenceCode').textContent)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bank-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Transfer açıklamasına referans kodunuzu eklemeyi unutmayın. Referans kodu olmadan yapılan transferler işleme alınmayabilir.</p>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-upload"></i> Para Yatır
+                </button>
+                <button type="button" class="cancel-btn" onclick="resetDepositForm()">
+                    <i class="fas fa-times"></i> İptal
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Recent Deposits -->
+    <div class="recent-deposits">
+        <div class="section-header">
+            <h3>Son Para Yatırma İşlemleri</h3>
+        </div>
+        <div class="deposits-list" id="recentDepositsList">
+            <div class="empty-state">
+                <i class="fas fa-history" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px;"></i>
+                <p>Henüz para yatırma işlemi bulunmuyor</p>
+                <small>İlk para yatırma işleminizi yaptığınızda burada görünecek</small>
+            </div>
+        </div>
+    </div>
+</section>

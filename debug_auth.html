@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Authentication - GlobalTradePro</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .debug-section { margin: 20px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #007bff; color: white; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #007bff; }
+        .log { background: #1f2937; color: #f9fafb; padding: 15px; border-radius: 5px; font-family: monospace; max-height: 300px; overflow-y: auto; }
+        .step { margin: 10px 0; padding: 10px; border: 1px solid #e5e7eb; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Authentication Debug Tool</h1>
+    
+    <div class="debug-section">
+        <h3>1. Current State Check</h3>
+        <div id="currentState" class="result"></div>
+        <button onclick="checkCurrentState()">Check Current State</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. Backend Connection Test</h3>
+        <div id="backendTest" class="result"></div>
+        <button onclick="testBackendConnection()">Test Backend</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. Profile API Test</h3>
+        <div id="profileTest" class="result"></div>
+        <button onclick="testProfileAPI()">Test Profile API</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>4. Component Loading Test</h3>
+        <div id="componentTest" class="result"></div>
+        <button onclick="testComponentLoading()">Test Components</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>5. Full Authentication Flow Test</h3>
+        <div id="fullTest" class="result"></div>
+        <button onclick="runFullTest()">Run Full Test</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>6. Debug Log</h3>
+        <div id="debugLog" class="log"></div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function checkCurrentState() {
+            const resultDiv = document.getElementById('currentState');
+            const authToken = localStorage.getItem('authToken');
+            const userRole = localStorage.getItem('userRole');
+            const userData = localStorage.getItem('userData');
+            
+            const state = {
+                authToken: authToken || 'Not set',
+                userRole: userRole || 'Not set',
+                userData: userData || 'Not set',
+                hasToken: !!authToken,
+                currentUrl: window.location.href,
+                userAgent: navigator.userAgent
+            };
+            
+            resultDiv.innerHTML = `
+                <div class="step">
+                    <strong>Auth Token:</strong> <span class="${state.hasToken ? 'success' : 'error'}">${state.authToken}</span><br>
+                    <strong>User Role:</strong> ${state.userRole}<br>
+                    <strong>User Data:</strong> ${state.userData}<br>
+                    <strong>Is Authenticated:</strong> <span class="${state.hasToken ? 'success' : 'error'}">${state.hasToken ? 'Yes' : 'No'}</span><br>
+                    <strong>Current URL:</strong> ${state.currentUrl}<br>
+                    <strong>User Agent:</strong> ${state.userAgent}
+                </div>
+            `;
+            
+            log(`Current state checked - Token: ${state.hasToken ? 'Present' : 'Missing'}`, state.hasToken ? 'success' : 'warning');
+        }
+        
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('backendTest');
+            resultDiv.innerHTML = '<div class="step">Testing backend connection...</div>';
+            
+            try {
+                // Test basic backend connectivity
+                const response = await fetch('backend/public/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'username=test&password=test'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="step success">
+                            ✅ Backend connection successful<br>
+                            <strong>Response:</strong> ${JSON.stringify(data)}
+                        </div>
+                    `;
+                    log('Backend connection test: SUCCESS', 'success');
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="step warning">
+                            ⚠️ Backend responded but with error<br>
+                            <strong>Status:</strong> ${response.status}<br>
+                            <strong>Status Text:</strong> ${response.statusText}
+                        </div>
+                    `;
+                    log(`Backend connection test: Status ${response.status}`, 'warning');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="step error">
+                        ❌ Backend connection failed<br>
+                        <strong>Error:</strong> ${error.message}<br>
+                        <strong>Type:</strong> ${error.name}
+                    </div>
+                `;
+                log(`Backend connection test: FAILED - ${error.message}`, 'error');
+            }
+        }
+        
+        async function testProfileAPI() {
+            const resultDiv = document.getElementById('profileTest');
+            resultDiv.innerHTML = '<div class="step">Testing profile API...</div>';
+            
+            try {
+                const response = await fetch('backend/public/profile.php', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="step success">
+                            ✅ Profile API successful<br>
+                            <strong>Username:</strong> ${data.user.username}<br>
+                            <strong>Balance:</strong> ₺${data.user.balance}<br>
+                            <strong>Role:</strong> ${data.user.role}
+                        </div>
+                    `;
+                    log('Profile API test: SUCCESS', 'success');
+                } else {
+                    const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+                    resultDiv.innerHTML = `
+                        <div class="step warning">
+                            ⚠️ Profile API failed<br>
+                            <strong>Status:</strong> ${response.status}<br>
+                            <strong>Message:</strong> ${errorData.message}
+                        </div>
+                    `;
+                    log(`Profile API test: Status ${response.status} - ${errorData.message}`, 'warning');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="step error">
+                        ❌ Profile API error<br>
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+                log(`Profile API test: ERROR - ${error.message}`, 'error');
+            }
+        }
+        
+        async function testComponentLoading() {
+            const resultDiv = document.getElementById('componentTest');
+            resultDiv.innerHTML = '<div class="step">Testing component loading...</div>';
+            
+            const components = [
+                { name: 'Sidebar', path: 'assets/components/sidebar.html' },
+                { name: 'Dashboard', path: 'assets/components/dashboard.html' }
+            ];
+            
+            let results = [];
+            
+            for (const component of components) {
+                try {
+                    const response = await fetch(component.path);
+                    if (response.ok) {
+                        const html = await response.text();
+                        results.push(`✅ ${component.name}: Loaded (${html.length} chars)`);
+                        log(`${component.name} component loaded successfully`, 'success');
+                    } else {
+                        results.push(`❌ ${component.name}: HTTP ${response.status}`);
+                        log(`${component.name} component failed: HTTP ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    results.push(`❌ ${component.name}: ${error.message}`);
+                    log(`${component.name} component error: ${error.message}`, 'error');
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="step">
+                    <strong>Component Loading Results:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+        }
+        
+        async function runFullTest() {
+            const resultDiv = document.getElementById('fullTest');
+            resultDiv.innerHTML = '<div class="step">Running full authentication flow test...</div>';
+            
+            log('Starting full authentication flow test...', 'info');
+            
+            // Step 1: Check current state
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                resultDiv.innerHTML = `
+                    <div class="step error">
+                        ❌ Test failed: No authentication token found<br>
+                        <strong>Action:</strong> Please log in first at login.html
+                    </div>
+                `;
+                log('Full test: FAILED - No auth token', 'error');
+                return;
+            }
+            
+            // Step 2: Test profile API
+            try {
+                const response = await fetch('backend/public/profile.php', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="step success">
+                            ✅ Full authentication test successful!<br>
+                            <strong>User:</strong> ${data.user.username}<br>
+                            <strong>Balance:</strong> ₺${data.user.balance}<br>
+                            <strong>Role:</strong> ${data.user.role}<br>
+                            <strong>Session:</strong> Active<br>
+                            <strong>Frontend Token:</strong> Present
+                        </div>
+                    `;
+                    log('Full test: SUCCESS - Authentication working properly', 'success');
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="step error">
+                            ❌ Authentication test failed<br>
+                            <strong>Status:</strong> ${response.status}<br>
+                            <strong>Issue:</strong> Session may be expired or invalid
+                        </div>
+                    `;
+                    log(`Full test: FAILED - Profile API returned ${response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="step error">
+                        ❌ Authentication test error<br>
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+                log(`Full test: ERROR - ${error.message}`, 'error');
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+        
+        // Auto-run current state check on load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Debug tool loaded', 'info');
+            checkCurrentState();
+        });
+    </script>
+</body>
+</html>
